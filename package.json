@@ -17,10 +17,10 @@
   },
   "homepage": "https://github.com/flocasts/serverless-offline-step-functions#readme",
   "dependencies": {
-    "JSONPath": "^0.11.2",
     "bluebird": "^3.7.2",
     "chalk": "^4.0.0",
     "http": "0.0.0",
+    "jsonpath": "^1.0.2",
     "lodash": ">=4.17.13",
     "serverless": "^1.67.0",
     "serverless-offline": "^6.1.4"

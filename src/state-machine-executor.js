@@ -1,7 +1,7 @@
 const child_process = require('child_process');
 const _ = require('lodash');
 const fs = require('fs');
-const jsonPath = require('JSONPath');
+const jsonPath = require('jsonpath');
 const choiceProcessor = require('./choice-processor');
 const stateTypes = require('./state-types');
 const StateRunTimeError = require('./state-machine-error');
@@ -196,7 +196,7 @@ class StateMachineExecutor {
         if ((stateInfo.Seconds && _.isNaN(+stateInfo.Seconds))) {
             milliseconds = +stateInfo.Seconds * 1000
         } else if (stateInfo.SecondsPath && input) {
-            milliseconds = +jsonPath({ json: input, path: stateInfo.SecondsPath })[0] * 1000;
+            milliseconds = +jsonPath.query(input, stateInfo.SecondsPath)[0] * 1000;
         } else if (stateInfo.Timestamp) {
             const waitDate = new Date(stateInfo.Timestamp);
             if (waitDate.getTime() < Date.now()) {
@@ -205,7 +205,7 @@ class StateMachineExecutor {
                 milliseconds = waitDate.getTime() - Date.now();
             }
         } else if (stateInfo.TimestampPath && input) {
-            const waitDate = new Date(jsonPath({ json: input, path: stateInfo.TimestampPath })[0]);
+            const waitDate = new Date(jsonPath.query(input, stateInfo.TimestampPath)[0]);
             if (waitDate.getTime() < Date.now()) {
                 milliseconds = 0;
             } else {
@@ -237,9 +237,9 @@ class StateMachineExecutor {
             input = {};
         } else {
             input = input ? input : {};
-            jsonPath({ json: input, path: stateInfo.InputPath, callback: (data) => {
+            jsonPath.query(input, stateInfo.InputPath, (data) => {
                 input = Object.assign({}, data);
-            }});
+            });
         }
     }
 
@@ -260,7 +260,7 @@ class StateMachineExecutor {
         // For more information, see Input and Output Processing.
         // https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-common-fields.html
         const path = typeof stateInfo.ResultPath === 'undefined' ? '$' : stateInfo.ResultPath;
-        const processed = jsonPath({ json: resultData, path: path });
+        const processed = jsonPath.query(resultData, path);
 
         if (typeof processed === 'undefined' || processed.length === 0) {
             return this.endStateMachine(
@@ -285,7 +285,7 @@ class StateMachineExecutor {
     processTaskOutputPath(data, path) {
         let output = null;
         if (path !== null) {
-            output = jsonPath({ json: data, path: path || '$', })[0];
+            output = jsonPath.query(data, path || '$')[0];
 
             if (!output) {
                 return this.endStateMachine(

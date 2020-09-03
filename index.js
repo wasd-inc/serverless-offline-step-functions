@@ -13,7 +13,7 @@ class ServerlessPlugin {
     this.service = serverless.service;
     this.options = options;
     this.logPrefix = '[Offline Step Functions] ';
-    this.handlersDirectory = `./node_modules/serverless-offline-step-functions/src`;
+    this.handlersDirectory = path.relative(process.cwd(), path.resolve(__dirname, 'src'));
 
     this.hooks = {
         'before:offline:start:init': () => require('./src/step-functions-api-simulator.js')(this.serverless),
@@ -89,7 +89,7 @@ class ServerlessPlugin {
                     lambdaFn.events = Object.assign([], stateMachine.events);
 
                     // set the handler to the generic state machine handler function
-                    lambdaFn.handler = `${this.handlersDirectory}/state-machine-handler.run`;
+                    lambdaFn.handler = path.join(this.handlersDirectory, 'state-machine-handler.run');
                     _.forEach(lambdaFn.events, (event) => {
                         if (event.http) {
                             event.input = { stateName: stateMachine.definition.StartAt, stateMachine: stateMachineName };
@@ -140,7 +140,7 @@ class ServerlessPlugin {
    * Creates a JSON file for reference during the state machine execution
    */
   createStepFunctionsJSON() {
-    fs.writeFileSync(`${this.handlersDirectory}/step-functions.json`, JSON.stringify(this.serverless.service.stepFunctions));
+    fs.writeFileSync(path.join(this.handlersDirectory, 'step-functions.json'), JSON.stringify(this.serverless.service.stepFunctions));
   }
 
   /**

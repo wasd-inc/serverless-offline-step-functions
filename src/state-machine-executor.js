@@ -160,7 +160,7 @@ class StateMachineExecutor {
                 const handlerSplit = stateInfo.handler.split('.');
                 // const cb = callback(null, { statusCode: 200, body: JSON.stringify({ startDate: sme.startDate, executionArn: sme.executionArn }) });
                 // const context = ;
-                let runner = `const context = require('./node_modules/serverless-offline-step-functions/node_modules/serverless-offline/src/createLambdaContext')(require('${this.getWebpackOrCommonFuction(handlerSplit[0])}').${handlerSplit[1]}, ${callback}); `;
+                let runner = `const context = require('${path.relative(process.cwd(), path.resolve(__dirname, '../node_modules/serverless-offline/src/createLambdaContext'))}')(require('${this.getWebpackOrCommonFuction(handlerSplit[0])}').${handlerSplit[1]}, ${callback}); `;
                 runner += `Promise.resolve(require("${this.getWebpackOrCommonFuction(handlerSplit[0])}").${handlerSplit[1]}(JSON.parse(process.env.input), context, ${callback}))`;
                 runner += `.then((data) => { console.log(JSON.stringify({ "${outputKey}": data || {} })); process.exit(0); })`;
                 runner += `.catch((e) => { console.error("${logPrefix} handler error:",e); })`;

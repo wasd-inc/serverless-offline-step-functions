@@ -35,7 +35,7 @@ module.exports = (serverless) => {
                     const sme = new StateMachineExecutor(machineKey, machine.definition.StartAt, { [machineKey]: machine });
 
                     // TODO: check integration type to set input properly (i.e. lambda vs. sns)
-                    sme.spawnProcess(currentState, data.input, {}, (err, result) => result);
+                    sme.spawnProcess(currentState, JSON.parse(data.input), {}, (err, result) => result);
                     startDate = sme.startDate;
                     exeArn = sme.executionArn;
                 }

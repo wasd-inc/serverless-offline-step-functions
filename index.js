@@ -5,7 +5,7 @@ const path = require('path');
 const Promise = require('bluebird');
 const fs = require('fs');
 const stateTypes = require('./src/state-types');
-const functionHelper = require('serverless-offline/src/functionHelper');
+// const functionHelper = require('serverless-offline/src/functionHelper');
 
 class ServerlessPlugin {
   constructor(serverless, options) {
@@ -76,7 +76,7 @@ class ServerlessPlugin {
                 }
 
                 const lambdaFn = this.service.getFunction(lambdaName);
-                const lamdaOpts = functionHelper.getFunctionOptions(lambdaFn, lambdaName, servicePath);
+                // const lamdaOpts = functionHelper.getFunctionOptions(lambdaFn, lambdaName, servicePath);
 
                 state.handler = functions[lambdaName].handler;
                 if (stateName === stateMachine.definition.StartAt) {

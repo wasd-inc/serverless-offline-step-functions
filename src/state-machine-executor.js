@@ -1,6 +1,7 @@
 const child_process = require('child_process');
 const _ = require('lodash');
 const fs = require('fs');
+const path = require('path');
 const jsonPath = require('jsonpath');
 const choiceProcessor = require('./choice-processor');
 const stateTypes = require('./state-types');
